@@ -95,7 +95,7 @@ class DocumentSummarizer:
             text_from_pdf = self._extract_text(file_content, pdf_path)
             print(f"   -> Successfully extracted {len(text_from_pdf)} characters.\n")
             
-            print("Step 2: Generating the summary with the Gemini API...")
+            print("Step 2: Generating the summary...")
             final_summary = self.get_summary(text_from_pdf)
             
             return final_summary
@@ -109,8 +109,7 @@ if __name__ == "__main__":
     # Example usage:
     # NOTE: This part is for demonstration and please remove 
     
-    pdf_file_path = "C:\\Users\\Lenovo\\Downloads\\_OceanofPDF.com_God_of_Wrath_-_Rina_Kent.pdf"
-
+    pdf_file_path = "C:\Users\Lenovo\Downloads\Exoplanet_report.pdf"
     # Initialize the summarizer
     summarizer = DocumentSummarizer()
 
