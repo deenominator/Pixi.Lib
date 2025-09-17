@@ -1,7 +1,3 @@
-transformers== 4.56.1 
-
-torch==2.8.0 
-
 python-dotenv==0.1.0
 
 PyMuPDF==1.26.4
