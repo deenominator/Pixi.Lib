@@ -1,0 +1,30 @@
+This document details a research project aimed at developing a novel exoplanet detection pipeline using convolutional neural networks (CNNs).  The project leverages existing exoplanet detection methods and datasets, primarily focusing on data from the Kepler mission.
+
+**Existing Exoplanet Detection Methods:** The document reviews three established exoplanet detection techniques:
+
+1. **Transit Method:** Detects periodic dips in a star's brightness caused by a planet passing in front of it.  This method is susceptible to false positives from binary stars or stellar variability.
+2. **Radial Velocity Method:** Measures the wobble of a star caused by the gravitational pull of orbiting planets, detectable through Doppler shifts in the star's light.
+3. **Gravitational Microlensing:** Observes the brightening of a star's light as a planet gravitationally lenses the light from a background star.
+
+**Existing Datasets and Pipelines:** The project examines two previously published pipelines:
+
+1. **A Deep Learning Approach:** This pipeline uses Kepler data, cleaning and pre-processing it (removing outliers, filling gaps), generating synthetic data to augment the real data, and performing 1D and 2D phase folding to create image inputs for a CNN.  2D phase folding, particularly, is highlighted for its ability to detect planets even with slightly inaccurate period estimations.  The Box Least Squares (BLS) algorithm is employed to estimate the transit period.
+2. **AstroNet:** This pipeline utilizes Threshold Crossing Events (TCEs) from Kepler data.  It pre-processes the light curves (outlier removal, flattening), creates both global and local views of the phase-folded data, and employs ensemble modeling with two CNNs to improve classification accuracy.
+
+
+**Proposed Pipeline:** The core of the project proposes a new pipeline integrating BLS, 2D phase folding, and CNNs.  Several strategies are explored:
+
+* **Initial Strategy (Multi-Period):** Uses BLS to find the top 10 periods, performs 2D phase folding for each, and uses two CNNs—one for the local view (high-resolution image of a single transit) and one for the 2D phase-folded image.  Ensemble modeling combines the predictions.
+* **Improved Strategy (Single-Period, Iterative):**  Uses BLS iteratively. It finds the strongest signal, masks it, and repeats to detect multiple planets.  This approach employs a "Shape Expert" CNN for 1D averaged views and a "Consistency Expert" CNN for the 2D image, combining their outputs for a final confidence score.
+* **Top-Down Approach:** Uses a 1D CNN to predict the number of planets, followed by BLS to find those periods and a 2D CNN for vetting. This approach is deemed less promising due to difficulties in detecting small dips in long light curves without phase folding.
+
+**Challenges and Experiments:** The project encounters several challenges:
+
+* **BLS Limitations:**  BLS is slow and its output isn't always a perfect indicator of a planet; it can be affected by stellar noise and other phenomena.
+* **Dataset Imbalance:**  Initial experiments with a pre-processed Kaggle dataset highlight the problem of class imbalance (far more non-exoplanets than exoplanets), leading to poor performance despite high accuracy metrics.
+* **Data Preprocessing:** The substantial Kepler dataset requires extensive preprocessing (stitching light curves, outlier removal, normalization, flattening using Savitzky-Golay filtering).  The Google Colab environment causes interruptions, hindering progress.
+* **Model Selection and Fine-tuning:** Experiments with pre-trained models (VGG16, VGG19, ResNet, Inception, Xception, EfficientNet) on 2D phase-folded images face challenges due to the grayscale nature of the images (pre-trained models are typically trained on RGB images) and difficulties in balancing the class distribution.  Attempts at fine-tuning pre-trained models on the 2D images, including undersampling, yield unsatisfactory results.
+* **Synthetic Data Generation:**  The project generates a synthetic dataset to address class imbalance using parameters from a previous paper.  The generated curves have to be carefully checked as the procedure might sometimes produce unwanted artifacts.
+
+
+**Progress and Next Steps:**  The project downloads the Kepler data from NASA's archive, pre-processes it, and creates 1D and 2D phase-folded images.  Experiments with Xception show moderate accuracy (around 70%).  Future work includes: creating a custom CNN architecture incorporating both 2D phase-folded and local views, improving the synthetic data generation process, experimenting with other pre-trained models and transformers, potentially adding variation to the 2D phase folding, and addressing the computational limitations by using computing resources with accelerators.
