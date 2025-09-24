@@ -159,6 +159,7 @@ User input
 
 ---
 ## Current Status
+
 These modules have been implemented and tested but features like a study buddy and integrated pomodoro system has not been integrated on the main platform workflow due to time limitations.
 ---
 ## Future Enhancements
