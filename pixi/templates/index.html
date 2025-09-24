@@ -1,0 +1,1997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Library - Read & Analyze Documents</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --accent: #f72585;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4cc9f0;
+            --warning: #f9c74f;
+            --danger: #f94144;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+        }
+
+        body {
+            background-color: #f5f7ff;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 10px;
+            color: var(--accent);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 1.5rem;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        nav ul li a:hover, nav ul li a.active {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Main Content */
+        main {
+            padding: 2rem 0;
+            min-height: calc(100vh - 180px);
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        /* Home Section */
+        .hero {
+            text-align: center;
+            padding: 3rem 0;
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.05), rgba(58, 12, 163, 0.05));
+            border-radius: 12px;
+            margin-bottom: 3rem;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--secondary);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: var(--gray);
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-card i {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 1rem;
+            color: var(--secondary);
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        /* Read Section */
+        .genre-filter {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .genre-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .genre-btn {
+            background: var(--light-gray);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .genre-btn:hover, .genre-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .more-genres-btn {
+            background: var(--light-gray);
+            border: 2px dashed var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .more-genres-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .hidden-genres {
+            display: none;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .hidden-genres.show {
+            display: flex;
+        }
+
+        .search-box {
+            display: flex;
+            margin-bottom: 2rem;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--light-gray);
+            border-radius: 4px 0 0 4px;
+            font-size: 1rem;
+        }
+
+        .search-box button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0 1.5rem;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+        }
+
+        .documents-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .document-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+        }
+
+        .document-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .document-img {
+            height: 180px;
+            background: linear-gradient(135deg, #4361ee, #3a0ca3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+        }
+
+        .document-content {
+            padding: 1.5rem;
+        }
+
+        .document-content h3 {
+            margin-bottom: 0.5rem;
+            color: var(--secondary);
+        }
+
+        .document-genre {
+            display: inline-block;
+            background: var(--light-gray);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+            color: var(--gray);
+        }
+
+        .document-summary {
+            color: var(--gray);
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .document-actions {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Write Section */
+        .upload-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .upload-box {
+            background: white;
+            border: 2px dashed var(--light-gray);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .upload-box:hover {
+            border-color: var(--primary);
+        }
+
+        .upload-box i {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .upload-info {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .upload-info h3 {
+            margin-bottom: 1rem;
+            color: var(--secondary);
+        }
+
+        .upload-info ol {
+            padding-left: 1.5rem;
+        }
+
+        .upload-info li {
+            margin-bottom: 0.5rem;
+        }
+
+        .processing {
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid var(--light-gray);
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .results {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .result-card {
+            background: var(--light);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .result-card h4 {
+            margin-bottom: 0.5rem;
+            color: var(--secondary);
+        }
+
+        /* Tickets Section */
+        .ticket-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .tickets-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .ticket-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .ticket-info h3 {
+            margin-bottom: 0.5rem;
+            color: var(--secondary);
+        }
+
+        .ticket-info p {
+            color: var(--gray);
+        }
+
+        .ticket-votes {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .ticket-votes button {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: var(--gray);
+        }
+
+        .ticket-votes button:hover {
+            color: var(--primary);
+        }
+
+        .ticket-votes span {
+            font-weight: 600;
+            margin: 0.5rem 0;
+        }
+
+        /* Help Section */
+        .help-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        .faq-item {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .faq-question span {
+            font-weight: 600;
+            color: var(--secondary);
+        }
+
+        .faq-answer {
+            padding: 0 1.5rem 1.5rem;
+            color: var(--gray);
+            display: none;
+        }
+
+        .faq-answer.active {
+            display: block;
+        }
+
+        .contact {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .contact h3 {
+            margin-bottom: 1rem;
+            color: var(--secondary);
+        }
+
+        .contact-info {
+            margin-top: 1rem;
+        }
+
+        .contact-info p {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            color: var(--gray);
+        }
+
+        .contact-info i {
+            margin-right: 0.5rem;
+            color: var(--primary);
+        }
+
+        /* Chat Widget */
+        .chat-widget {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 1000;
+        }
+
+        .chat-icon {
+            width: 70px;
+            height: 70px;
+            cursor: pointer;
+            transition: transform 0.3s;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .chat-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .chat-icon i {
+            font-size: 2rem;
+            color: white;
+        }
+
+        .chat-box {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            width: 350px;
+            height: 450px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-header button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+        }
+
+        .message {
+            margin-bottom: 1rem;
+            max-width: 80%;
+        }
+
+        .message p {
+            padding: 0.75rem;
+            border-radius: 18px;
+        }
+
+        .message.bot p {
+            background: var(--light-gray);
+            border-top-left-radius: 4px;
+        }
+
+        .message.user {
+            margin-left: auto;
+        }
+
+        .message.user p {
+            background: var(--primary);
+            color: white;
+            border-top-right-radius: 4px;
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 0.5rem;
+            border-top: 1px solid var(--light-gray);
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid var(--light-gray);
+            border-radius: 20px;
+            margin-right: 0.5rem;
+        }
+
+        .chat-input button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .chat-ticket-btn {
+            padding: 0.75rem;
+            background: var(--light-gray);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: background-color 0.3s;
+            margin: 0.5rem;
+            font-weight: 600;
+        }
+
+        .chat-ticket-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--secondary);
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--light-gray);
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        /* Discussion System Styles */
+        .discussion-section {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--light-gray);
+        }
+
+        .discussion-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .discussion-form {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .discussion-form textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid var(--light-gray);
+            border-radius: 4px;
+            resize: vertical;
+            min-height: 100px;
+            margin-bottom: 1rem;
+            font-family: inherit;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-row input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid var(--light-gray);
+            border-radius: 4px;
+        }
+
+        .discussion-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .discussion-item {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .discussion-item.reply {
+            margin-left: 3rem;
+            background: var(--light);
+        }
+
+        .discussion-meta {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        .discussion-author {
+            font-weight: 600;
+            margin-right: 1rem;
+            color: var(--secondary);
+        }
+
+        .discussion-date {
+            color: var(--gray);
+        }
+
+        .discussion-content {
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .discussion-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .discussion-votes {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .vote-btn {
+            background: none;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .vote-btn:hover {
+            background: var(--light-gray);
+            color: var(--primary);
+        }
+
+        .vote-btn.upvoted {
+            color: var(--success);
+        }
+
+        .vote-btn.downvoted {
+            color: var(--danger);
+        }
+
+        .vote-count {
+            font-weight: 600;
+            min-width: 2rem;
+            text-align: center;
+        }
+
+        .reply-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .reply-form {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--light);
+            border-radius: 4px;
+            border-left: 3px solid var(--primary);
+        }
+
+        .reply-form textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--light-gray);
+            border-radius: 4px;
+            resize: vertical;
+            min-height: 80px;
+            margin-bottom: 0.5rem;
+            font-family: inherit;
+        }
+
+        .no-discussions {
+            text-align: center;
+            padding: 2rem;
+            color: var(--gray);
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Document Read View */
+        .document-read-view {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 2000;
+            overflow-y: auto;
+        }
+
+        .read-view-header {
+            position: sticky;
+            top: 0;
+            background: white;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--light-gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+        }
+
+        .read-view-content {
+            padding: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .read-view-iframe {
+            width: 100%;
+            height: 70vh;
+            border: 1px solid var(--light-gray);
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+
+        .close-read-view {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .close-read-view:hover {
+            background: #e02d30;
+        }
+
+        /* Utility Classes */
+        .hidden {
+            display: none !important;
+        }
+
+        .error {
+            color: var(--danger);
+            text-align: center;
+            padding: 2rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            nav ul li {
+                margin: 0.5rem;
+            }
+            
+            .upload-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .help-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .chat-box {
+                width: 300px;
+                right: -20px;
+            }
+            
+            .document-read-view {
+                padding: 1rem;
+            }
+            
+            .read-view-content {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-book-open"></i>
+                    <span>PDF Library</span>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#" class="nav-link active" data-section="home">Home</a></li>
+                        <li><a href="#" class="nav-link" data-section="read">Read</a></li>
+                        <li><a href="#" class="nav-link" data-section="write">Write</a></li>
+                        <li><a href="#" class="nav-link" data-section="tickets">Raised Tickets</a></li>
+                        <li><a href="#" class="nav-link" data-section="help">Help</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Home Section -->
+        <section id="home" class="section active">
+            <div class="hero">
+                <h1>Discover, Read & Share Knowledge</h1>
+                <p>Upload PDFs, get automatic genre classification and summaries, and explore a world of documents</p>
+                <button id="get-started" class="btn-primary">Get Started</button>
+            </div>
+            <div class="features">
+                <div class="feature-card">
+                    <i class="fas fa-robot"></i>
+                    <h3>AI-Powered Analysis</h3>
+                    <p>Automatically categorize and summarize your PDFs with our advanced AI</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-search"></i>
+                    <h3>Easy Discovery</h3>
+                    <p>Find documents by genre or search for specific content</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-ticket-alt"></i>
+                    <h3>Request Content</h3>
+                    <p>Can't find what you need? Request documents through our ticket system</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Read Section -->
+        <section id="read" class="section">
+            <h2>Explore Documents</h2>
+            <div class="genre-filter">
+                <h3>Filter by Genre</h3>
+                <div class="genre-buttons">
+                    <button class="genre-btn active" data-genre="all">All</button>
+                    <button class="genre-btn" data-genre="Technology">Technology</button>
+                    <button class="genre-btn" data-genre="Cooking">Cooking</button>
+                    <button class="genre-btn" data-genre="Science">Science</button>
+                    <button class="more-genres-btn">
+                        <span>More</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                </div>
+                <div class="hidden-genres">
+                    <button class="genre-btn" data-genre="Fiction">Fiction</button>
+                    <button class="genre-btn" data-genre="Science Fiction">Science Fiction</button>
+                    <button class="genre-btn" data-genre="Fantasy">Fantasy</button>
+                    <button class="genre-btn" data-genre="Mystery">Mystery</button>
+                    <button class="genre-btn" data-genre="Thriller">Thriller</button>
+                    <button class="genre-btn" data-genre="Horror">Horror</button>
+                    <button class="genre-btn" data-genre="Romance">Romance</button>
+                    <button class="genre-btn" data-genre="Historical Fiction">Historical Fiction</button>
+                    <button class="genre-btn" data-genre="History">History</button>
+                    <button class="genre-btn" data-genre="Biography">Biography</button>
+                    <button class="genre-btn" data-genre="Autobiography">Autobiography</button>
+                    <button class="genre-btn" data-genre="Philosophy">Philosophy</button>
+                    <button class="genre-btn" data-genre="Psychology">Psychology</button>
+                    <button class="genre-btn" data-genre="Politics">Politics</button>
+                    <button class="genre-btn" data-genre="Business">Business</button>
+                    <button class="genre-btn" data-genre="Economics">Economics</button>
+                    <button class="genre-btn" data-genre="World News">World News</button>
+                    <button class="genre-btn" data-genre="Health">Health</button>
+                    <button class="genre-btn" data-genre="Education">Education</button>
+                    <button class="genre-btn" data-genre="Art">Art</button>
+                    <button class="genre-btn" data-genre="Music">Music</button>
+                    <button class="genre-btn" data-genre="Photography">Photography</button>
+                    <button class="genre-btn" data-genre="Travel">Travel</button>
+                    <button class="genre-btn" data-genre="Sports">Sports</button>
+                    <button class="genre-btn" data-genre="Entertainment">Entertainment</button>
+                </div>
+            </div>
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="Search for documents...">
+                <button id="search-btn"><i class="fas fa-search"></i></button>
+            </div>
+            <div class="documents-grid">
+                <!-- Documents will be loaded here -->
+            </div>
+        </section>
+
+        <!-- Write Section -->
+        <section id="write" class="section">
+            <h2>Upload PDF Document</h2>
+            <div class="upload-container">
+                <div class="upload-box" id="upload-box">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Drag & Drop your PDF here</p>
+                    <p>or</p>
+                    <button class="btn-primary">Browse Files</button>
+                    <input type="file" id="file-input" accept=".pdf" hidden>
+                </div>
+                <div class="upload-info">
+                    <h3>How it works:</h3>
+                    <ol>
+                        <li>Upload your PDF document</li>
+                        <li>Our AI will analyze the content</li>
+                        <li>Genre will be automatically assigned</li>
+                        <li>A summary will be generated</li>
+                        <li>Your document will be added to the library</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="processing hidden">
+                <div class="spinner"></div>
+                <p>Processing your document...</p>
+            </div>
+            <div class="results hidden">
+                <h3>Analysis Results</h3>
+                <div class="result-card">
+                    <h4>Genre: <span id="genre-result">Science</span></h4>
+                    <h4>Summary:</h4>
+                    <p id="summary-result">The document appears to be about scientific research in the field of astronomy, specifically focusing on exoplanet detection methods using advanced neural networks.</p>
+                </div>
+                <button class="btn-primary" id="add-to-library">Add to Library</button>
+            </div>
+        </section>
+
+        <!-- Tickets Section -->
+        <section id="tickets" class="section">
+            <h2>Raised Tickets</h2>
+            <div class="ticket-header">
+                <p>Request documents you'd like to see in our library</p>
+                <button class="btn-primary" id="raise-ticket-btn">Raise a Ticket</button>
+            </div>
+            <div class="tickets-list">
+                <!-- Tickets will be loaded here -->
+            </div>
+        </section>
+
+        <!-- Help Section -->
+        <section id="help" class="section">
+            <h2>Help & Support</h2>
+            <div class="help-content">
+                <div class="faq">
+                    <h3>Frequently Asked Questions</h3>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>How do I upload a PDF?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Go to the Write section, drag and drop your PDF file or click to browse. Our system will automatically process it.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>How accurate is the genre prediction?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Our AI model is about 85-90% accurate in predicting genres based on the content of your documents.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>Can I request a specific document?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Yes! Use the Raise Ticket feature to request documents. Other users can upvote your request.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="contact">
+                    <h3>Contact Us</h3>
+                    <p>Have questions or need support? Reach out to our team:</p>
+                    <div class="contact-info">
+                        <p><i class="fas fa-envelope"></i> support@pdflibrary.com</p>
+                        <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Floating Chat Widget -->
+    <div class="chat-widget">
+        <div class="chat-icon">
+            <i class="fas fa-comment-dots"></i>
+        </div>
+        <div class="chat-box hidden">
+            <div class="chat-header">
+                <h3>PDF Library Assistant</h3>
+                <button class="close-chat"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="chat-messages">
+                <div class="message bot">
+                    <p>Hello! How can I help you today?</p>
+                </div>
+            </div>
+            <div class="chat-input">
+                <input type="text" placeholder="Type your message...">
+                <button><i class="fas fa-paper-plane"></i></button>
+            </div>
+            <button class="chat-ticket-btn" id="chat-ticket-btn">
+                <i class="fas fa-ticket-alt"></i> Raise Ticket
+            </button>
+        </div>
+    </div>
+
+    <!-- Ticket Modal -->
+    <div class="modal hidden" id="ticket-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Raise a Ticket</h3>
+                <button class="close-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <p>Request a document you'd like to see in our library</p>
+                <form id="ticket-form">
+                    <div class="form-group">
+                        <label for="document-name">Document Name</label>
+                        <input type="text" id="document-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="additional-info">Additional Information (optional)</label>
+                        <textarea id="additional-info" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn-primary">Submit Request</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Document Read View with Discussion -->
+    <div class="document-read-view" id="document-read-view">
+        <div class="read-view-header">
+            <h2 id="read-view-title">Document Title</h2>
+            <button class="close-read-view" onclick="closeReadView()">Close</button>
+        </div>
+        <div class="read-view-content">
+            <div class="document-info">
+                <span class="document-genre" id="read-view-genre">Genre</span>
+                <p id="read-view-summary">Summary will appear here...</p>
+            </div>
+            
+            <iframe id="read-view-iframe" class="read-view-iframe"></iframe>
+            
+            <!-- Discussion Section -->
+            <div class="discussion-section">
+                <div class="discussion-header">
+                    <h3>Discussion</h3>
+                    <span>Share your thoughts about this document</span>
+                </div>
+                
+                <div class="discussion-form">
+                    <textarea id="new-discussion-content" placeholder="What are your thoughts?"></textarea>
+                    <div class="form-row">
+                        <input type="text" id="new-discussion-author" placeholder="Your name (optional)">
+                        <button class="btn-primary" onclick="submitNewDiscussion()">Post Discussion</button>
+                    </div>
+                </div>
+                
+                <div class="discussion-list" id="discussion-list">
+                    <!-- Discussions will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const navLinks = document.querySelectorAll('.nav-link');
+        const sections = document.querySelectorAll('.section');
+        const genreButtons = document.querySelectorAll('.genre-btn');
+        const moreGenresBtn = document.querySelector('.more-genres-btn');
+        const hiddenGenres = document.querySelector('.hidden-genres');
+        const documentsGrid = document.querySelector('.documents-grid');
+        const ticketsList = document.querySelector('.tickets-list');
+        const uploadBox = document.getElementById('upload-box');
+        const fileInput = document.getElementById('file-input');
+        const processingSection = document.querySelector('.processing');
+        const resultsSection = document.querySelector('.results');
+        const genreResult = document.getElementById('genre-result');
+        const summaryResult = document.getElementById('summary-result');
+        const raiseTicketBtn = document.getElementById('raise-ticket-btn');
+        const ticketModal = document.getElementById('ticket-modal');
+        const ticketForm = document.getElementById('ticket-form');
+        const chatIcon = document.querySelector('.chat-icon');
+        const chatBox = document.querySelector('.chat-box');
+        const closeChat = document.querySelector('.close-chat');
+        const chatTicketBtn = document.getElementById('chat-ticket-btn');
+        const closeModal = document.querySelector('.close-modal');
+        const getStartedBtn = document.getElementById('get-started');
+        const searchInput = document.getElementById('search-input');
+        const searchBtn = document.getElementById('search-btn');
+        const chatInput = document.querySelector('.chat-input input');
+        const chatSendBtn = document.querySelector('.chat-input button');
+
+        // Initialize the application
+        function init() {
+            loadDocuments();
+            loadTickets();
+            setupEventListeners();
+        }
+
+        // Load documents from backend
+        async function loadDocuments(filterGenre = null) {
+            try {
+                const url = filterGenre && filterGenre !== 'all' 
+                    ? `/api/documents?genre=${encodeURIComponent(filterGenre)}` 
+                    : '/api/documents';
+                const response = await fetch(url);
+                const documents = await response.json();
+                
+                displayDocuments(documents);
+            } catch (error) {
+                console.error('Error loading documents:', error);
+                documentsGrid.innerHTML = '<p class="error">Error loading documents. Please try again.</p>';
+            }
+        }
+
+        // Display documents in the grid
+        function displayDocuments(documents) {
+            documentsGrid.innerHTML = '';
+            
+            if (documents.length === 0) {
+                documentsGrid.innerHTML = '<p class="no-docs">No documents found.</p>';
+                return;
+            }
+            
+            documents.forEach(doc => {
+                const card = document.createElement('div');
+                card.classList.add('document-card');
+                
+                card.innerHTML = `
+                    <div class="document-img">
+                        <i class="fas fa-file-pdf"></i>
+                    </div>
+                    <div class="document-content">
+                        <h3>${doc.title}</h3>
+                        <span class="document-genre">${doc.genre}</span>
+                        <p class="document-summary">${doc.summary || 'No summary available.'}</p>
+                        <div class="document-actions">
+                            <button class="btn-primary" onclick="readDocument(${doc.id})">Read</button>
+                            <button class="download-btn"><i class="fas fa-download"></i></button>
+                        </div>
+                    </div>
+                `;
+                
+                documentsGrid.appendChild(card);
+            });
+        }
+
+        // Filter documents by genre
+        function filterDocumentsByGenre(genre) {
+            // Update active button
+            genreButtons.forEach(btn => btn.classList.remove('active'));
+            const activeBtn = Array.from(genreButtons).find(btn => btn.getAttribute('data-genre') === genre);
+            if (activeBtn) activeBtn.classList.add('active');
+            
+            loadDocuments(genre);
+        }
+
+        // Search documents
+        async function searchDocuments() {
+            const query = searchInput.value.trim();
+            if (!query) {
+                loadDocuments();
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/documents/search?q=${encodeURIComponent(query)}`);
+                const documents = await response.json();
+                
+                displayDocuments(documents);
+            } catch (error) {
+                console.error('Error searching documents:', error);
+                documentsGrid.innerHTML = '<p class="error">Error searching documents. Please try again.</p>';
+            }
+        }
+
+        // Load tickets from backend
+        async function loadTickets() {
+            try {
+                const response = await fetch('/api/tickets');
+                const tickets = await response.json();
+                
+                displayTickets(tickets);
+            } catch (error) {
+                console.error('Error loading tickets:', error);
+                ticketsList.innerHTML = '<p class="error">Error loading tickets. Please try again.</p>';
+            }
+        }
+
+        // Display tickets
+        function displayTickets(tickets) {
+            ticketsList.innerHTML = '';
+            
+            if (tickets.length === 0) {
+                ticketsList.innerHTML = '<p class="no-tickets">No tickets raised yet.</p>';
+                return;
+            }
+            
+            tickets.forEach(ticket => {
+                const ticketElement = document.createElement('div');
+                ticketElement.classList.add('ticket-card');
+                
+                ticketElement.innerHTML = `
+                    <div class="ticket-info">
+                        <h3>${ticket.title}</h3>
+                        <p>${ticket.description || 'No description provided.'}</p>
+                    </div>
+                    <div class="ticket-votes">
+                        <button class="upvote-btn" onclick="upvoteTicket(${ticket.id})">
+                            <i class="fas fa-chevron-up"></i>
+                        </button>
+                        <span>${ticket.votes}</span>
+                    </div>
+                `;
+                
+                ticketsList.appendChild(ticketElement);
+            });
+        }
+
+        // Upvote ticket
+        async function upvoteTicket(ticketId) {
+            try {
+                const response = await fetch(`/api/tickets/${ticketId}/upvote`, {
+                    method: 'POST'
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    loadTickets(); // Refresh the list
+                } else {
+                    alert('Failed to upvote ticket');
+                }
+            } catch (error) {
+                console.error('Error upvoting ticket:', error);
+                alert('Error upvoting ticket');
+            }
+        }
+
+        // Submit ticket form
+        async function submitTicketForm(event) {
+            event.preventDefault();
+            
+            const title = document.getElementById('document-name').value;
+            const description = document.getElementById('additional-info').value;
+            
+            try {
+                const response = await fetch('/api/tickets', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ title, description })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('Ticket raised successfully!');
+                    ticketForm.reset();
+                    ticketModal.classList.add('hidden');
+                    loadTickets(); // Refresh tickets list
+                } else {
+                    alert('Failed to raise ticket: ' + (result.error || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error raising ticket:', error);
+                alert('Error raising ticket');
+            }
+        }
+
+        // Handle file upload
+        async function handleFileUpload(file) {
+            if (file.type !== 'application/pdf') {
+                alert('Please upload a PDF file');
+                return;
+            }
+            
+            // Show processing UI
+            uploadBox.style.display = 'none';
+            processingSection.classList.remove('hidden');
+            
+            try {
+                // Create form data
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('title', file.name.replace('.pdf', ''));
+                
+                // Send to backend
+                const response = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const results = await response.json();
+                
+                if (results.success) {
+                    // Update UI with real results
+                    genreResult.textContent = results.genre;
+                    summaryResult.textContent = results.summary;
+                    
+                    // Show results
+                    processingSection.classList.add('hidden');
+                    resultsSection.classList.remove('hidden');
+                    
+                    // Refresh documents list
+                    loadDocuments();
+                } else {
+                    throw new Error(results.error || 'Unknown error occurred');
+                }
+            } catch (error) {
+                // Handle errors
+                processingSection.classList.add('hidden');
+                alert('Error processing file: ' + error.message);
+                uploadBox.style.display = 'block';
+            }
+        }
+
+        // Document reading and discussion functions
+        let currentDocumentId = null;
+
+        function readDocument(documentId) {
+            currentDocumentId = documentId;
+            
+            // Show document read view
+            const readView = document.getElementById('document-read-view');
+            readView.style.display = 'block';
+            
+            // Load document details
+            loadDocumentDetails(documentId);
+            
+            // Load discussions
+            loadDiscussions(documentId);
+        }
+
+        function closeReadView() {
+            const readView = document.getElementById('document-read-view');
+            readView.style.display = 'none';
+        }
+
+        async function loadDocumentDetails(documentId) {
+            try {
+                const response = await fetch(`/api/documents/${documentId}`);
+                const document = await response.json();
+                
+                // Update read view content
+                document.getElementById('read-view-title').textContent = document.title;
+                document.getElementById('read-view-genre').textContent = document.genre;
+                document.getElementById('read-view-summary').textContent = document.summary;
+                
+                // Load PDF
+                const iframe = document.getElementById('read-view-iframe');
+                iframe.src = `/uploads/${document.filename}`;
+                
+            } catch (error) {
+                console.error('Error loading document:', error);
+                alert('Error loading document');
+            }
+        }
+
+        async function loadDiscussions(documentId) {
+            try {
+                const response = await fetch(`/api/documents/${documentId}/discussions`);
+                const discussions = await response.json();
+                
+                displayDiscussions(documentId, discussions);
+            } catch (error) {
+                console.error('Error loading discussions:', error);
+                document.getElementById('discussion-list').innerHTML = 
+                    '<p class="error">Error loading discussions</p>';
+            }
+        }
+
+        function displayDiscussions(documentId, discussions) {
+            const discussionList = document.getElementById('discussion-list');
+            discussionList.innerHTML = '';
+            
+            if (discussions.length === 0) {
+                discussionList.innerHTML = `
+                    <div class="no-discussions">
+                        <i class="fas fa-comments" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                        <p>No discussions yet. Be the first to start a conversation!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Group comments by parent ID
+            const commentTree = buildCommentTree(discussions);
+            
+            // Display top-level comments
+            commentTree[0].forEach(comment => {
+                discussionList.appendChild(createCommentElement(documentId, comment, commentTree, 0));
+            });
+        }
+
+        function buildCommentTree(discussions) {
+            const tree = {};
+            
+            discussions.forEach(comment => {
+                if (!tree[comment.parent_id]) {
+                    tree[comment.parent_id] = [];
+                }
+                tree[comment.parent_id].push(comment);
+            });
+            
+            return tree;
+        }
+
+        function createCommentElement(documentId, comment, commentTree, depth) {
+            const commentEl = document.createElement('div');
+            commentEl.className = `discussion-item ${depth > 0 ? 'reply' : ''}`;
+            commentEl.dataset.id = comment.id;
+            
+            const replies = commentTree[comment.id] || [];
+            
+            commentEl.innerHTML = `
+                <div class="discussion-meta">
+                    <span class="discussion-author">${comment.author}</span>
+                    <span class="discussion-date">${new Date(comment.created_date).toLocaleDateString()}</span>
+                </div>
+                <div class="discussion-content">${comment.content}</div>
+                <div class="discussion-actions">
+                    <div class="discussion-votes">
+                        <button class="vote-btn upvote" onclick="voteDiscussion(${comment.id}, 'upvote')">
+                            <i class="fas fa-arrow-up"></i>
+                        </button>
+                        <span class="vote-count">${comment.votes}</span>
+                        <button class="vote-btn downvote" onclick="voteDiscussion(${comment.id}, 'downvote')">
+                            <i class="fas fa-arrow-down"></i>
+                        </button>
+                    </div>
+                    <button class="reply-btn" onclick="toggleReplyForm(${comment.id})">
+                        <i class="fas fa-reply"></i> Reply
+                    </button>
+                </div>
+                <div class="reply-form hidden" id="reply-form-${comment.id}">
+                    <textarea placeholder="Write your reply..." id="reply-content-${comment.id}"></textarea>
+                    <div class="form-row">
+                        <input type="text" placeholder="Your name (optional)" id="reply-author-${comment.id}">
+                        <button class="btn-primary" onclick="submitReply(${documentId}, ${comment.id})">Post Reply</button>
+                    </div>
+                </div>
+            `;
+            
+            // Add replies if they exist
+            if (replies.length > 0) {
+                const repliesContainer = document.createElement('div');
+                repliesContainer.className = 'discussion-replies';
+                
+                replies.forEach(reply => {
+                    repliesContainer.appendChild(createCommentElement(documentId, reply, commentTree, depth + 1));
+                });
+                
+                commentEl.appendChild(repliesContainer);
+            }
+            
+            return commentEl;
+        }
+
+        async function submitNewDiscussion() {
+            const content = document.getElementById('new-discussion-content').value;
+            const author = document.getElementById('new-discussion-author').value || 'Anonymous';
+            
+            if (!content.trim()) {
+                alert('Please write something before posting');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/documents/${currentDocumentId}/discussions`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ content, author })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Clear form and reload discussions
+                    document.getElementById('new-discussion-content').value = '';
+                    document.getElementById('new-discussion-author').value = '';
+                    loadDiscussions(currentDocumentId);
+                } else {
+                    alert('Error posting discussion: ' + (result.error || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error posting discussion:', error);
+                alert('Error posting discussion');
+            }
+        }
+
+        async function submitReply(documentId, parentId) {
+            const content = document.getElementById(`reply-content-${parentId}`).value;
+            const author = document.getElementById(`reply-author-${parentId}`).value || 'Anonymous';
+            
+            if (!content.trim()) {
+                alert('Please write something before posting');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/documents/${documentId}/discussions`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ content, author, parent_id: parentId })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Hide form and reload discussions
+                    document.getElementById(`reply-form-${parentId}`).classList.add('hidden');
+                    loadDiscussions(documentId);
+                } else {
+                    alert('Error posting reply: ' + (result.error || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error posting reply:', error);
+                alert('Error posting reply');
+            }
+        }
+
+        function toggleReplyForm(commentId) {
+            const form = document.getElementById(`reply-form-${commentId}`);
+            form.classList.toggle('hidden');
+        }
+
+        async function voteDiscussion(discussionId, voteType) {
+            try {
+                const response = await fetch(`/api/discussions/${discussionId}/vote`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ type: voteType })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Update UI to reflect vote
+                    const voteCount = document.querySelector(`.discussion-item[data-id="${discussionId}"] .vote-count`);
+                    if (voteCount) {
+                        const currentVotes = parseInt(voteCount.textContent);
+                        voteCount.textContent = voteType === 'upvote' ? currentVotes + 1 : currentVotes - 1;
+                    }
+                } else {
+                    alert('Error voting: ' + (result.error || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error voting:', error);
+                alert('Error voting');
+            }
+        }
+
+        // Chat functionality
+        function addMessage(text, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            messageDiv.innerHTML = `<p>${text}</p>`;
+            document.querySelector('.chat-messages').appendChild(messageDiv);
+            document.querySelector('.chat-messages').scrollTop = document.querySelector('.chat-messages').scrollHeight;
+        }
+
+        async function sendMessageToAPI(question) {
+            try {
+                const response = await fetch('https://iamshubhshrma-ankitapp.hf.space/ask', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        question: question
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('API request failed');
+                }
+                
+                const data = await response.json();
+                return data.answer;
+            } catch (error) {
+                console.error('Error calling API:', error);
+                return "I'm sorry, I'm having trouble connecting to the analysis service right now. Please try again in a few moments.";
+            }
+        }
+
+        async function sendChatMessage() {
+            const message = chatInput.value.trim();
+            if (message === '') return;
+            
+            addMessage(message, 'user');
+            chatInput.value = '';
+            
+            // Show typing indicator
+            const typingIndicator = document.createElement('div');
+            typingIndicator.className = 'message bot';
+            typingIndicator.innerHTML = '<p><i>PDF Assistant is typing...</i></p>';
+            document.querySelector('.chat-messages').appendChild(typingIndicator);
+            document.querySelector('.chat-messages').scrollTop = document.querySelector('.chat-messages').scrollHeight;
+            
+            try {
+                const response = await sendMessageToAPI(message);
+                
+                // Remove typing indicator
+                document.querySelector('.chat-messages').removeChild(typingIndicator);
+                
+                addMessage(response, 'bot');
+            } catch (error) {
+                // Remove typing indicator
+                const typingIndicator = document.querySelector('.message.bot:last-child');
+                if (typingIndicator && typingIndicator.querySelector('p').innerHTML.includes('typing')) {
+                    document.querySelector('.chat-messages').removeChild(typingIndicator);
+                }
+                
+                addMessage("I'm sorry, I'm having trouble connecting right now. Please try again later.", 'bot');
+            }
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Navigation
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetSection = link.getAttribute('data-section');
+                    switchSection(targetSection);
+                });
+            });
+            
+            // Genre filtering
+            genreButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const genre = button.getAttribute('data-genre');
+                    filterDocumentsByGenre(genre);
+                });
+            });
+            
+            // More genres button
+            moreGenresBtn.addEventListener('click', function() {
+                hiddenGenres.classList.toggle('show');
+                const icon = this.querySelector('i');
+                if (hiddenGenres.classList.contains('show')) {
+                    icon.className = 'fas fa-chevron-up';
+                } else {
+                    icon.className = 'fas fa-chevron-down';
+                }
+            });
+            
+            // File upload
+            uploadBox.addEventListener('click', () => fileInput.click());
+            uploadBox.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadBox.classList.add('dragover');
+            });
+            uploadBox.addEventListener('dragleave', () => {
+                uploadBox.classList.remove('dragover');
+            });
+            uploadBox.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadBox.classList.remove('dragover');
+                if (e.dataTransfer.files.length) {
+                    handleFileUpload(e.dataTransfer.files[0]);
+                }
+            });
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length) {
+                    handleFileUpload(e.target.files[0]);
+                }
+            });
+            
+            // Search
+            searchBtn.addEventListener('click', searchDocuments);
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    searchDocuments();
+                }
+            });
+            
+            // Ticket system
+            raiseTicketBtn.addEventListener('click', () => {
+                ticketModal.classList.remove('hidden');
+            });
+            
+            chatTicketBtn.addEventListener('click', () => {
+                chatBox.classList.add('hidden');
+                ticketModal.classList.remove('hidden');
+            });
+            
+            ticketForm.addEventListener('submit', submitTicketForm);
+            
+            closeModal.addEventListener('click', () => {
+                ticketModal.classList.add('hidden');
+            });
+            
+            // Chat widget
+            chatIcon.addEventListener('click', () => {
+                chatBox.classList.toggle('hidden');
+            });
+            
+            closeChat.addEventListener('click', () => {
+                chatBox.classList.add('hidden');
+            });
+            
+            chatSendBtn.addEventListener('click', sendChatMessage);
+            
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    sendChatMessage();
+                }
+            });
+            
+            // Get started button
+            getStartedBtn.addEventListener('click', () => {
+                switchSection('read');
+            });
+            
+            // FAQ accordion
+            document.querySelectorAll('.faq-question').forEach(question => {
+                question.addEventListener('click', () => {
+                    const answer = question.nextElementSibling;
+                    const icon = question.querySelector('i');
+                    
+                    // Toggle current answer
+                    answer.classList.toggle('active');
+                    
+                    // Rotate icon
+                    if (answer.classList.contains('active')) {
+                        icon.style.transform = 'rotate(180deg)';
+                    } else {
+                        icon.style.transform = 'rotate(0deg)';
+                    }
+                    
+                    // Close other answers
+                    document.querySelectorAll('.faq-question').forEach(otherQuestion => {
+                        if (otherQuestion !== question) {
+                            const otherAnswer = otherQuestion.nextElementSibling;
+                            const otherIcon = otherQuestion.querySelector('i');
+                            otherAnswer.classList.remove('active');
+                            otherIcon.style.transform = 'rotate(0deg)';
+                        }
+                    });
+                });
+            });
+        }
+
+        // Switch between sections
+        function switchSection(sectionId) {
+            // Update navigation
+            navLinks.forEach(link => {
+                if (link.getAttribute('data-section') === sectionId) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+            
+            // Update sections
+            sections.forEach(section => {
+                if (section.id === sectionId) {
+                    section.classList.add('active');
+                } else {
+                    section.classList.remove('active');
+                }
+            });
+        }
+
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
