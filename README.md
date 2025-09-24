@@ -39,7 +39,7 @@ User input
 [Semantic Search]    
     │                            
     ▼                            
-[Build Gemini Prompt with Context]
+[Build Gemini Prompt with Context and emotion]
     │
     ▼
 [Gemini 1.5 Flash Response]
@@ -48,7 +48,7 @@ User input
 [Log to Session File]
     │
     ▼
-[Feedback Prompt (manual or Gemini-generated)]
+[Feedback Prompt (Gemini-generated)]
 ```
 
 ---
