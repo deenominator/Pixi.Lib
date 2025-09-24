@@ -157,6 +157,14 @@ User input
 
 -- Comprehensive UI Elements: Includes an expandable FAQ, contact information, and various visual feedback mechanisms.
 
+<img width="1280" height="648" alt="image" src="https://github.com/user-attachments/assets/7b29ddeb-e944-49c0-9309-684d7d52d8b0" />
+<img width="1280" height="656" alt="image" src="https://github.com/user-attachments/assets/f53f3b78-62c9-4acc-a1be-d42cd91da006" />
+<img width="1280" height="463" alt="image" src="https://github.com/user-attachments/assets/a73f2fd0-d9f9-47c4-b17f-d40d8c344725" />
+<img width="1280" height="359" alt="image" src="https://github.com/user-attachments/assets/3135ada7-84cb-40cb-97df-2fc4ffda3b4b" />
+<img width="1280" height="680" alt="image" src="https://github.com/user-attachments/assets/54ecc9d5-37be-4f84-98c8-b02ab33e5d58" />
+
+
+
 ---
 ## Current Status
 
