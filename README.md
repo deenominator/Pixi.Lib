@@ -173,8 +173,11 @@ User input
 ## Future Enhancements
 
 -- User Authentication
+
 -- Implement AI-driven routing of document requests to relevant subject matter experts.
+
 -- Perform sentiment analysis on discussion threads to gauge community feedback.
+
 -- Multi-language Support
 
 ---
