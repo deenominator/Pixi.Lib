@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Write - Pixi.lib{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>Upload Document</h1>
+        <p>Share your document with the community</p>
+    </div>
+
+    <div class="upload-container">
+        <div class="upload-card">
+            <div class="upload-area" id="uploadArea">
+                <i class="fas fa-cloud-upload-alt fa-3x"></i>
+                <h3>Drag & Drop your document here</h3>
+                <p>Supported formats: PDF, TXT (Max 16MB)</p>
+                <input type="file" id="fileInput" accept=".pdf,.txt" style="display: none;">
+                <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
+                    <i class="fas fa-folder-open"></i> Browse Files
+                </button>
+            </div>
+
+            <div class="upload-form" id="uploadForm" style="display: none;">
+                <div class="form-group">
+                    <label for="documentTitle">Document Title</label>
+                    <input type="text" id="documentTitle" placeholder="Enter document title...">
+                </div>
+                
+                <div class="form-group">
+                    <label>File: <span id="fileName"></span></label>
+                </div>
+
+                <div class="form-actions">
+                    <button class="btn btn-secondary" onclick="cancelUpload()">Cancel</button>
+                    <button class="btn btn-primary" onclick="processUpload()">
+                        <i class="fas fa-upload"></i> Upload & Analyze
+                    </button>
+                </div>
+            </div>
+
+            <div class="upload-progress" id="uploadProgress" style="display: none;">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <p id="progressText">Processing your document...</p>
+            </div>
+
+            <div class="upload-result" id="uploadResult" style="display: none;">
+                <div class="result-success">
+                    <i class="fas fa-check-circle fa-3x"></i>
+                    <h3>Document Uploaded Successfully!</h3>
+                    <div class="result-details">
+                        <p><strong>Title:</strong> <span id="resultTitle"></span></p>
+                        <p><strong>Genre:</strong> <span id="resultGenre"></span></p>
+                        <p><strong>Summary:</strong> <span id="resultSummary"></span></p>
+                    </div>
+                    <div class="result-actions">
+                        <a href="{{ url_for('read_page') }}" class="btn btn-primary">View in Library</a>
+                        <button class="btn btn-secondary" onclick="resetUpload()">Upload Another</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

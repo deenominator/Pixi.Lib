@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Help - Pixi.lib{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>Help & Support</h1>
+        <p>Get help using Pixi.lib</p>
+    </div>
+
+    <div class="help-content">
+        <div class="faq-section">
+            <h2>Frequently Asked Questions</h2>
+            
+            <div class="faq-item">
+                <button class="faq-question">
+                    How do I upload a document?
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>Go to the "Write" page, drag and drop your PDF or TXT file, add a title, and click upload. Our AI will automatically analyze and categorize your document.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question">
+                    What file formats are supported?
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>Currently, we support PDF and plain text files (.txt). Maximum file size is 16MB.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question">
+                    How does genre prediction work?
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>Our AI analyzes the content of your document and matches it against 25+ predefined genres using machine learning algorithms.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question">
+                    Can I request specific documents?
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>Yes! Use the "Raise Ticket" feature to request documents. Other users can upvote your request.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="contact-section">
+            <h2>Contact Support</h2>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <div>
+                        <h3>Email</h3>
+                        <p>support@pixi.lib</p>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-phone"></i>
+                    <div>
+                        <h3>Phone</h3>
+                        <p>+1 (555) 123-4567</p>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-clock"></i>
+                    <div>
+                        <h3>Support Hours</h3>
+                        <p>Monday - Friday: 9AM - 6PM EST</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

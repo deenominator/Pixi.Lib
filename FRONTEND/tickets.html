@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Tickets - Pixi.lib{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>Community Requests</h1>
+        <p>Request documents and vote on community suggestions</p>
+    </div>
+
+    <div class="tickets-actions">
+        <button class="btn btn-primary" onclick="showRaiseTicketModal()">
+            <i class="fas fa-plus"></i> Raise New Ticket
+        </button>
+    </div>
+
+    <div class="tickets-grid" id="ticketsGrid">
+        {% for ticket in tickets %}
+        <div class="ticket-card">
+            <div class="ticket-header">
+                <h3>{{ ticket.title }}</h3>
+                <span class="ticket-votes">{{ ticket.votes }} votes</span>
+            </div>
+            <div class="ticket-description">
+                <p>{{ ticket.description }}</p>
+            </div>
+            <div class="ticket-meta">
+                <span class="ticket-date">Requested on {{ ticket.created_date[:10] }}</span>
+                <button class="btn btn-vote" onclick="upvoteTicket({{ ticket.id }})">
+                    <i class="fas fa-arrow-up"></i> Upvote
+                </button>
+            </div>
+        </div>
+        {% else %}
+        <div class="no-tickets">
+            <i class="fas fa-ticket-alt fa-3x"></i>
+            <h3>No tickets yet</h3>
+            <p>Be the first to request a document!</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

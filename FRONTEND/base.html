@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Pixi.lib - AI-Powered Document Library{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h1><i class="fas fa-book-open"></i> Pixi.lib</h1>
+            </div>
+            <div class="nav-menu">
+                <a href="{{ url_for('index') }}" class="nav-link {% if request.endpoint == 'index' %}active{% endif %}">
+                    <i class="fas fa-home"></i> Home
+                </a>
+                <a href="{{ url_for('read_page') }}" class="nav-link {% if request.endpoint == 'read_page' %}active{% endif %}">
+                    <i class="fas fa-book"></i> Read
+                </a>
+                <a href="{{ url_for('write_page') }}" class="nav-link {% if request.endpoint == 'write_page' %}active{% endif %}">
+                    <i class="fas fa-upload"></i> Write
+                </a>
+                <a href="{{ url_for('tickets_page') }}" class="nav-link {% if request.endpoint == 'tickets_page' %}active{% endif %}">
+                    <i class="fas fa-ticket-alt"></i> Tickets
+                </a>
+                <a href="{{ url_for('help_page') }}" class="nav-link {% if request.endpoint == 'help_page' %}active{% endif %}">
+                    <i class="fas fa-question-circle"></i> Help
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Floating Chat Widget -->
+    <div class="chat-widget" id="chatWidget">
+        <div class="chat-header">
+            <h3><i class="fas fa-robot"></i> Pixi.lib Assistant</h3>
+            <button class="chat-close" onclick="toggleChat()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="chat-body">
+            <div class="chat-messages" id="chatMessages">
+                <div class="message bot-message">
+                    <div class="message-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="message-content">
+                        <p>Hello! I'm your Pixi.lib assistant. I can help you find documents, answer questions, or assist with raising tickets. How can I help you today?</p>
+                    </div>
+                </div>
+            </div>
+            <div class="chat-input">
+                <input type="text" id="chatInput" placeholder="Ask me anything about Pixi.lib...">
+                <button id="sendMessage"><i class="fas fa-paper-plane"></i></button>
+            </div>
+            <div class="chat-actions">
+                <button class="chat-action-btn" onclick="suggestQuestion('How do I upload a document?')">
+                    <i class="fas fa-upload"></i> Upload Help
+                </button>
+                <button class="chat-action-btn" onclick="showRaiseTicketModal()">
+                    <i class="fas fa-ticket-alt"></i> Raise Ticket
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat Toggle Button -->
+    <button class="chat-toggle" onclick="toggleChat()">
+        <i class="fas fa-comments"></i>
+    </button>
+
+    <!-- Raise Ticket Modal -->
+    <div class="modal" id="raiseTicketModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Raise New Ticket</h3>
+                <button class="modal-close" onclick="closeModal('raiseTicketModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="ticketForm">
+                    <div class="form-group">
+                        <label for="ticketTitle">Title</label>
+                        <input type="text" id="ticketTitle" placeholder="What document are you looking for?" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ticketDescription">Description</label>
+                        <textarea id="ticketDescription" placeholder="Please describe the document you need..." rows="4" required></textarea>
+                    </div>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-paper-plane"></i> Submit Ticket
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

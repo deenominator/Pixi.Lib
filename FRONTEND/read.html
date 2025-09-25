@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block title %}Read - Pixi.lib{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>Explore Documents</h1>
+        <p>Discover and read documents from various genres</p>
+    </div>
+
+    <div class="search-filters">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Search documents..." value="{{ search_query }}">
+            <button onclick="performSearch()">Search</button>
+        </div>
+        
+        <div class="genre-filters">
+            <div class="genre-tags">
+                <button class="genre-tag {% if not genre_filter %}active{% endif %}" onclick="filterByGenre('')">All</button>
+                {% for genre in ['Fiction', 'Science Fiction', 'Fantasy', 'Mystery', 'Thriller', 'Technology', 'Science'] %}
+                <button class="genre-tag {% if genre_filter == genre %}active{% endif %}" onclick="filterByGenre('{{ genre }}')">{{ genre }}</button>
+                {% endfor %}
+                <button class="genre-tag more-btn" onclick="toggleMoreGenres()">More <i class="fas fa-chevron-down"></i></button>
+            </div>
+            
+            <div class="more-genres" id="moreGenres" style="display: none;">
+                {% for genre in ['Horror', 'Romance', 'Historical Fiction', 'History', 'Biography', 'Autobiography', 
+                               'Philosophy', 'Psychology', 'Politics', 'Business', 'Economics', 'World News', 
+                               'Health', 'Education', 'Art', 'Music', 'Photography', 'Cooking', 'Travel', 'Sports', 'Entertainment'] %}
+                <button class="genre-tag {% if genre_filter == genre %}active{% endif %}" onclick="filterByGenre('{{ genre }}')">{{ genre }}</button>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="documents-grid" id="documentsGrid">
+        {% for document in documents %}
+        <div class="document-card" data-document-id="{{ document.id }}">
+            <div class="document-header">
+                <h3>{{ document.title }}</h3>
+                <span class="genre-badge">{{ document.genre }}</span>
+            </div>
+            <div class="document-summary">
+                <p>{{ document.summary[:200] }}{% if document.summary|length > 200 %}...{% endif %}</p>
+            </div>
+            <div class="document-meta">
+                <span class="upload-date">{{ document.upload_date[:10] }}</span>
+                <div class="vote-buttons">
+                    <button class="vote-btn upvote" onclick="voteDocument({{ document.id }}, 'up')">
+                        <i class="fas fa-arrow-up"></i> <span class="count">{{ document.upvotes or 0 }}</span>
+                    </button>
+                    <button class="vote-btn downvote" onclick="voteDocument({{ document.id }}, 'down')">
+                        <i class="fas fa-arrow-down"></i> <span class="count">{{ document.downvotes or 0 }}</span>
+                    </button>
+                </div>
+            </div>
+            <div class="document-actions">
+                <button class="btn btn-primary" onclick="openDocument({{ document.id }})">
+                    <i class="fas fa-book-open"></i> Read & Discuss
+                </button>
+            </div>
+        </div>
+        {% else %}
+        <div class="no-documents">
+            <i class="fas fa-book-open fa-3x"></i>
+            <h3>No documents found</h3>
+            <p>Try changing your search criteria or upload a new document</p>
+            <a href="{{ url_for('write_page') }}" class="btn btn-primary">Upload Document</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Document & Discussion Modal -->
+<div class="modal" id="documentModal">
+    <div class="modal-content large" style="max-width: 1200px;">
+        <div class="modal-header">
+            <h3 id="modalDocumentTitle">Document Title</h3>
+            <button class="modal-close" onclick="closeModal('documentModal')">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="document-view-container">
+                <div class="pdf-viewer">
+                    <h4>Document Preview</h4>
+                    <div class="pdf-container" id="pdfContainer">
+                        <iframe id="pdfViewer" width="100%" height="500px" style="border: 1px solid #ddd; border-radius: 5px;"></iframe>
+                    </div>
+                    <div class="document-info">
+                        <div class="info-item">
+                            <strong>Genre:</strong> <span id="modalDocumentGenre"></span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Uploaded:</strong> <span id="modalDocumentDate"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="discussion-section">
+                    <h4>Discussion <span id="commentCount">(0 comments)</span></h4>
+                    
+                    <div class="discussion-form">
+                        <form id="commentForm">
+                            <div class="form-group">
+                                <input type="text" id="commentAuthor" placeholder="Your name (optional)" value="Anonymous" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <textarea id="commentContent" placeholder="Add your comment..." required class="form-textarea"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane"></i> Post Comment
+                            </button>
+                        </form>
+                    </div>
+                    
+                    <div class="discussion-thread" id="discussionThread">
+                        <!-- Comments will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

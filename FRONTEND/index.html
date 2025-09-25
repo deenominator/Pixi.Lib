@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Pixi.lib{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <div class="hero-content">
+        <h1>Welcome to Pixi.lib</h1>
+        <p>Your AI-powered document library with smart summarization, genre classification, and community discussions</p>
+        <div class="hero-buttons">
+            <a href="{{ url_for('read_page') }}" class="btn btn-primary">
+                <i class="fas fa-book-reader"></i> Explore Documents
+            </a>
+            <a href="{{ url_for('write_page') }}" class="btn btn-secondary">
+                <i class="fas fa-cloud-upload-alt"></i> Upload Document
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="features-section">
+    <div class="container">
+        <h2>Why Choose Pixi.lib?</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h3>AI-Powered Analysis</h3>
+                <p>Automatic summarization and genre classification using advanced machine learning algorithms</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3>Community Driven</h3>
+                <p>Reddit-style discussions, voting system, and community-requested content</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <h3>Smart Search</h3>
+                <p>Find documents by genre, content, or community recommendations</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <h3>AI Assistant</h3>
+                <p>24/7 chatbot support to help you navigate and use the platform</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="stats-section">
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3 id="documentsCount">0</h3>
+                <p>Documents Available</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="genresCount">25+</h3>
+                <p>Genres Supported</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="communityCount">0</h3>
+                <p>Community Discussions</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
