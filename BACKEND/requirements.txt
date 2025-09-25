@@ -1,0 +1,6 @@
+flask==2.3.3
+werkzeug==2.3.7
+google-generativeai==0.3.2
+python-dotenv==1.0.0
+PyPDF2==3.0.1
+pdfplumber==0.10.3
