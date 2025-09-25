@@ -157,11 +157,17 @@ User input
 
 -- Comprehensive UI Elements: Includes an expandable FAQ, contact information, and various visual feedback mechanisms.
 
-<img width="1280" height="648" alt="image" src="https://github.com/user-attachments/assets/7b29ddeb-e944-49c0-9309-684d7d52d8b0" />
-<img width="1280" height="656" alt="image" src="https://github.com/user-attachments/assets/f53f3b78-62c9-4acc-a1be-d42cd91da006" />
-<img width="1280" height="463" alt="image" src="https://github.com/user-attachments/assets/a73f2fd0-d9f9-47c4-b17f-d40d8c344725" />
-<img width="1280" height="359" alt="image" src="https://github.com/user-attachments/assets/3135ada7-84cb-40cb-97df-2fc4ffda3b4b" />
-<img width="1280" height="680" alt="image" src="https://github.com/user-attachments/assets/54ecc9d5-37be-4f84-98c8-b02ab33e5d58" />
+<img width="1348" height="598" alt="image" src="https://github.com/user-attachments/assets/865e43ca-91ff-4054-bcaf-4979af4548e3" />
+<img width="1351" height="602" alt="image" src="https://github.com/user-attachments/assets/e20d6cd2-c16d-4acb-9ac0-249c4e838e3b" />
+<img width="1350" height="606" alt="image" src="https://github.com/user-attachments/assets/a1e0918c-244b-4fcb-b9b1-7505f64a7419" />
+<img width="1365" height="605" alt="image" src="https://github.com/user-attachments/assets/1faf9992-d047-4730-830e-79aec2bb438a" />
+<img width="1365" height="606" alt="image" src="https://github.com/user-attachments/assets/2b8ec097-431d-46e2-9c62-758fb92f4a14" />
+<img width="1347" height="608" alt="image" src="https://github.com/user-attachments/assets/d34ada34-b858-481a-9df2-6db2fa6cc2a5" />
+<img width="372" height="575" alt="image" src="https://github.com/user-attachments/assets/7e69bdc8-2d0e-4f47-837f-be8b1019cfe6" />
+
+
+
+
 
 
 
